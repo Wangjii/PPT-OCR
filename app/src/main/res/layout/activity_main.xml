@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <TextView
+        android:id="@+id/index_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开始使用"
+        android:textSize="48sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"/>
+    <TextView
+        android:id="@+id/index_subtitle"
+        android:layout_below="@id/index_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="立刻拍照或从相册中选择一张图片"/>
+
+    <ImageView
+        android:id="@+id/background_image"
+        android:layout_below="@+id/index_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="300dp"
+        android:src="@drawable/ic_background_02"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/background_image">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_camera"
+            style="@style/Widget.MaterialComponents.Button.Icon"
+            android:paddingVertical="10dp"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_camera_alt_black_24dp"
+            app:iconGravity="textStart"
+            android:text="拍摄" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_gallery"
+            style="@style/Widget.MaterialComponents.Button.Icon"
+            android:paddingVertical="10dp"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_camera_black_24dp"
+            app:iconGravity="textStart"
+            android:text="从相册中选择" />
+    </LinearLayout>
+</RelativeLayout>
