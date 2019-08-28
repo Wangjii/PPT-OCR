@@ -1,18 +1,32 @@
 package com.nku.scandinavia;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
+import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+
 import org.opencv.android.OpenCVLoader;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+import pub.devrel.easypermissions.EasyPermissions;
+
+import java.io.File;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, EasyPermissions.PermissionCallbacks {
+    private Uri uri;
+    private File cameraSavePath;//拍照照片路径
+    private String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
 
     @Override
@@ -29,8 +43,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(this, "openCv cannot be loaded", Toast.LENGTH_LONG).show();
         }
 
+        if (EasyPermissions.hasPermissions(this, permissions)) {
+            //已经打开权限
+            Toast.makeText(this, "已经申请相关权限", Toast.LENGTH_SHORT).show();
+        } else {
+            //没有打开相关权限、申请权限
+            EasyPermissions.requestPermissions(this, "需要获取您的相册、照相使用权限", 1, permissions);
+        }
+
+
         button_camera.setOnClickListener(this);
         button_gallery.setOnClickListener(this);
+
+//        cameraSavePath = new File(Environment.getExternalStorageDirectory().getPath() + "/" + System.currentTimeMillis() + ".jpg");
 
     }
 
@@ -38,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.button_camera:
+
                 goCamera();
                 break;
             case R.id.button_gallery:
@@ -50,6 +76,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // 调用相机
     private void goCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            uri = FileProvider.getUriForFile(MainActivity.this, "com.nku.scandinavia.fileprovider", cameraSavePath);
+//            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//        } else {
+//            uri = Uri.fromFile(cameraSavePath);
+//        }
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        MainActivity.this.startActivityForResult(intent, 111);
+
 
     }
 
@@ -63,8 +100,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         switch (requestCode) {
             case 111:
+
                 break;
             case 222:
                 if (resultCode == RESULT_CANCELED) {
@@ -79,6 +118,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
         }
+    }
 
+
+
+    //用户未同意权限
+
+    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+        Toast.makeText(this, "请同意相关权限，否则功能无法使用", Toast.LENGTH_SHORT).show();
+    }
+
+    //成功打开权限
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
+        Toast.makeText(this, "相关权限获取成功", Toast.LENGTH_SHORT).show();
     }
 }
