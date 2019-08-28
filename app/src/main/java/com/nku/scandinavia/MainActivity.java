@@ -10,6 +10,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -20,20 +22,20 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
-
-
 import org.opencv.android.OpenCVLoader;
-
 import pub.devrel.easypermissions.EasyPermissions;
+import com.nku.scandinavia.helpers.Constants;
 
 import java.io.File;
 import java.util.List;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, EasyPermissions.PermissionCallbacks {
     private Uri imageUri;
     private File cameraSavePath;//拍照照片名称
     private String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
+    Bitmap selectedImageBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,12 +149,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     return;
                 }
                 try {
-                    imageUri = data.getData();
-//                    imgShow.setImageURI(imageUri);
+                    Uri selectedImageUri = data.getData();
+                    loadImageUriToBitmap(selectedImageUri);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
+        }
+    }
+
+    private void loadImageUriToBitmap(Uri selectedImageUri) {
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
+            selectedImageBitmap = BitmapFactory.decodeStream(inputStream);
+            Constants.selectedImageBitmap = selectedImageBitmap;
+            // jump to ImageDisplayActivity
+            Intent intent = new Intent(getApplicationContext(), ImageDisplayActivity.class);
+            startActivity(intent);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 

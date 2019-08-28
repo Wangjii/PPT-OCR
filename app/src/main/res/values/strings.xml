@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Scandinavia</string>
+    <string name="title_activity_image_display">ImageDisplayActivity</string>
 </resources>
