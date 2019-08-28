@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,7 +26,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, EasyPermissions.PermissionCallbacks {
     private Uri imageUri;
-    private File cameraSavePath;//拍照照片路径
+    private File cameraSavePath;//拍照照片名称
     private String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
 
@@ -46,9 +47,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         button_camera.setOnClickListener(this);
         button_gallery.setOnClickListener(this);
 
-        cameraSavePath = new File(Environment.getExternalStorageDirectory().getPath() + "/" + System.currentTimeMillis() + ".jpg");
+        cameraSavePath = new File( Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath()+'/'+System.currentTimeMillis() + ".jpg");
 
     }
+
 
     @Override
     public void onClick(View view) {
@@ -129,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 try {
                     photoPath = String.valueOf(cameraSavePath);
                     Log.d("拍照返回图片路径:", photoPath);
-                } catch (Exception e    ) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             case 222:
