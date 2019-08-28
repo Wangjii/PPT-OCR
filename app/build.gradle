@@ -28,4 +28,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation project(path: ':openCVLibrary347')
     implementation 'com.google.android.material:material:1.0.0'
+    implementation 'pub.devrel:easypermissions:3.0.0'
+
 }
