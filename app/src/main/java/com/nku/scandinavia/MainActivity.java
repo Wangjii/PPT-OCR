@@ -3,6 +3,8 @@ package com.nku.scandinavia;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -10,10 +12,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.nku.scandinavia.helpers.Constants;
+
 import org.opencv.android.OpenCVLoader;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    Bitmap selectedImageBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +51,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 goGallery();
                 break;
         }
-
-
     }
 
     // 调用相机
@@ -72,13 +77,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     return;
                 }
                 try {
-                    Uri imageUri = data.getData();
-//                    imgShow.setImageURI(imageUri);
+                    Uri selectedImageUri = data.getData();
+                    loadImageUriToBitmap(selectedImageUri);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
         }
+    }
 
+    private void loadImageUriToBitmap(Uri selectedImageUri) {
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
+            selectedImageBitmap = BitmapFactory.decodeStream(inputStream);
+            Constants.selectedImageBitmap = selectedImageBitmap;
+            // jump to ImageDisplayActivity
+            Intent intent = new Intent(getApplicationContext(), ImageDisplayActivity.class);
+            startActivity(intent);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
