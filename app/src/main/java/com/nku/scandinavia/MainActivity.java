@@ -2,18 +2,23 @@ package com.nku.scandinavia;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 
@@ -43,14 +48,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             Toast.makeText(this, "openCv cannot be loaded", Toast.LENGTH_LONG).show();
         }
-
         button_camera.setOnClickListener(this);
         button_gallery.setOnClickListener(this);
-
-        cameraSavePath = new File( Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath()+'/'+System.currentTimeMillis() + ".jpg");
-
+        cameraSavePath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getPath() + '/' + System.currentTimeMillis() + ".jpg");
+        initAnimation();
     }
-
 
     @Override
     public void onClick(View view) {
@@ -69,8 +71,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 goGallery();
                 break;
         }
+    }
 
-
+    private void initAnimation() {
+        ImageView imageView = (ImageView) findViewById(R.id.swing_play);
+        imageView.setBackgroundResource(R.drawable.progress_animation);
+        AnimationDrawable frameAnimation = (AnimationDrawable) imageView.getBackground();
+        frameAnimation.start();
     }
 
     // 调用相机
