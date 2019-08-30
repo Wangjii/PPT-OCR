@@ -12,4 +12,5 @@
 /captures
 .externalNativeBuild
 .cxx
+/openCVLibrary347/build
 /app/src/main/jniLibs
