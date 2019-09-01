@@ -78,7 +78,7 @@ public class ImageDisplayActivity extends AppCompatActivity {
 
     private void initEvents() {
         nextButton.setOnClickListener(this.nextButtonClick);
-        nextButton.setOnClickListener(this.prevButtonClick);
+        prevButton.setOnClickListener(this.prevButtonClick);
     }
 
     private Map<Integer, PointF> getEdgePoints(Bitmap bitmap) {
