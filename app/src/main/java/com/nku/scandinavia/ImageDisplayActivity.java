@@ -16,14 +16,17 @@ import com.nku.scandinavia.libs.PolygonView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -93,7 +96,18 @@ public class ImageDisplayActivity extends AppCompatActivity {
 
     private List<PointF> getContourEdgePoints(Bitmap bitmap) {
         MatOfPoint2f point2f = nativeClass.getPoint(bitmap);
-        List<Point> points = Arrays.asList(point2f.toArray());
+        List<Point> points;
+        if (point2f == null) {
+            Point[] array_points = new Point[4];
+            array_points[0] = new Point(0, 0);
+            array_points[1] = new Point(0, bitmap.getWidth());
+            array_points[2] = new Point(bitmap.getHeight(), 0);
+            array_points[3] = new Point(bitmap.getHeight(), bitmap.getWidth());
+            points = Arrays.asList(array_points);
+            Toast.makeText(this, "未找到轮廓，请手动选择", Toast.LENGTH_SHORT).show();
+        } else {
+            points = Arrays.asList(point2f.toArray());
+        }
 
         List<PointF> result = new ArrayList<>();
         for (int i = 0; i < points.size(); i++) {
@@ -113,9 +127,9 @@ public class ImageDisplayActivity extends AppCompatActivity {
     private Map<Integer, PointF> getOutlinePoints(Bitmap bitmap) {
         Map<Integer, PointF> outlinePoints = new HashMap<>();
         outlinePoints.put(0, new PointF(0, 0));
-        outlinePoints.put(1, new PointF(bitmap.getWidth(), 0));
-        outlinePoints.put(2, new PointF(0, bitmap.getHeight()));
-        outlinePoints.put(3, new PointF(bitmap.getWidth(), bitmap.getHeight()));
+        outlinePoints.put(1, new PointF(bitmap.getHeight(), 0));
+        outlinePoints.put(2, new PointF(0, bitmap.getWidth()));
+        outlinePoints.put(3, new PointF(bitmap.getHeight(), bitmap.getWidth()));
         return outlinePoints;
     }
 
