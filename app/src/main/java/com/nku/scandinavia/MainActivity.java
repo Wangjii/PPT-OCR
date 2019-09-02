@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -159,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     photoPath = getPath(selectedImageUri);
                     degree = getBitmapDegree(photoPath);
                     loadImageUriToBitmap(selectedImageUri, degree);
+                    Log.e( "onActivityResult: ",photoPath );
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

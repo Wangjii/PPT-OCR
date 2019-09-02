@@ -1,6 +1,7 @@
 package com.nku.scandinavia.libs;
 
 import android.graphics.Bitmap;
+import android.graphics.PointF;
 
 import com.nku.scandinavia.helpers.ImageUtils;
 import com.nku.scandinavia.helpers.MathUtils;
@@ -130,7 +131,6 @@ public class NativeClass {
                 }
             }
         }
-
         return rectangles;
 
     }
