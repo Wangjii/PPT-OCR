@@ -1,20 +1,26 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:colorBackground">@color/background</item>
-    </style>
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar" />
+
     <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:colorBackground">@color/black</item>
     </style>
+
     <style name="FloatButton.Done" parent="Widget.MaterialComponents.FloatingActionButton">
         <item name="backgroundTint">@color/white</item>
         <item name="rippleColor">@color/colorPrimaryShallow</item>
     </style>
+
     <style name="FloatButton.Back" parent="Widget.MaterialComponents.FloatingActionButton">
         <item name="backgroundTint">@color/white</item>
         <item name="rippleColor">@color/colorPrimaryShallow</item>
     </style>
+
     <style name="BottomSheet">
         <item name="android:colorBackground">@color/background</item>
     </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

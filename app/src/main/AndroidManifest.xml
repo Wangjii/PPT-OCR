@@ -2,11 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.nku.scandinavia">
-
-    <!--读写内存块权限-->
+    <!-- 读写内存块权限 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <!--调用相机权限-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 调用相机权限 -->
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
@@ -18,17 +16,19 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
+            android:name=".ImageProcessActivity"
+            android:label="@string/title_activity_image_process"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".ImageDisplayActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <!--定义共享信息-->
+        </activity> <!-- 定义共享信息 -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.nku.scandinavia.file_provider"
