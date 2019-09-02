@@ -1,5 +1,6 @@
 package com.nku.scandinavia;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.PointF;
@@ -13,7 +14,9 @@ import com.nku.scandinavia.libs.NativeClass;
 import com.nku.scandinavia.libs.PolygonView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -72,13 +75,14 @@ public class ImageDisplayActivity extends AppCompatActivity {
 
         polygonView.setPoints(pointFs);
         polygonView.setVisibility(View.VISIBLE);
-
-//        int padding = (int) getResources().getDimension(R.dimen.scanPadding);
+        int padding = (int) getResources().getDimension(R.dimen.scan_padding);
+        ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(tmp.getWidth() + 2 * padding, tmp.getHeight() + 2 * padding);
+        polygonView.setLayoutParams(layoutParams);
     }
 
     private void initEvents() {
         nextButton.setOnClickListener(this.nextButtonClick);
-        nextButton.setOnClickListener(this.prevButtonClick);
+        prevButton.setOnClickListener(this.prevButtonClick);
     }
 
     private Map<Integer, PointF> getEdgePoints(Bitmap bitmap) {
@@ -121,10 +125,29 @@ public class ImageDisplayActivity extends AppCompatActivity {
         return Bitmap.createBitmap(image, 0, 0, image.getWidth(), image.getHeight(), m, true);
     }
 
+    protected Bitmap getCroppedImage() {
+        Map<Integer, PointF> points = polygonView.getPoints();
+        float xRatio = (float) selectedImageBitmap.getWidth() / selectedImageView.getWidth();
+        float yRatio = (float) selectedImageBitmap.getHeight() / selectedImageView.getHeight();
+
+        float x1 = (points.get(0).x) * xRatio;
+        float x2 = (points.get(1).x) * xRatio;
+        float x3 = (points.get(2).x) * xRatio;
+        float x4 = (points.get(3).x) * xRatio;
+        float y1 = (points.get(0).y) * yRatio;
+        float y2 = (points.get(1).y) * yRatio;
+        float y3 = (points.get(2).y) * yRatio;
+        float y4 = (points.get(3).y) * yRatio;
+
+        return nativeClass.getScannedBitmap(selectedImageBitmap, x1, y1, x2, y2, x3, y3, x4, y4);
+    }
+
     private View.OnClickListener nextButtonClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-
+            Constants.croppedImageBitmap = getCroppedImage();
+            Intent intent = new Intent(getApplicationContext(), ImageProcessActivity.class);
+            startActivity(intent);
         }
     };
 

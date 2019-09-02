@@ -4,4 +4,5 @@ import android.graphics.Bitmap;
 
 public class Constants {
     public static Bitmap selectedImageBitmap;
+    public static Bitmap croppedImageBitmap;
 }
