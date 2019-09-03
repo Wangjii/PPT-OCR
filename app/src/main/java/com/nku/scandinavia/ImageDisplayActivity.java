@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.String.valueOf;
+
 public class ImageDisplayActivity extends AppCompatActivity {
     ImageView selectedImageView;
     FloatingActionButton nextButton;
@@ -53,12 +55,14 @@ public class ImageDisplayActivity extends AppCompatActivity {
 
     private void initComponents() {
         nativeClass = new NativeClass();
-        selectedImageView = (ImageView) findViewById(R.id.imageView);
-        selectedImageView.setImageBitmap(Constants.selectedImageBitmap);
+
         nextButton = findViewById(R.id.button_next);
         prevButton = findViewById(R.id.button_prev);
         polygonView = findViewById(R.id.polygon);
         holderImageCrop = findViewById(R.id.holderImageCrop);
+
+        selectedImageView = (ImageView) findViewById(R.id.imageView);
+//        selectedImageView.setImageBitmap(Constants.selectedImageBitmap);
 
         holderImageCrop.post(new Runnable() {
             @Override
@@ -75,7 +79,6 @@ public class ImageDisplayActivity extends AppCompatActivity {
         selectedImageView.setImageBitmap(scaledBitmap);
         Bitmap tmp = ((BitmapDrawable) selectedImageView.getDrawable()).getBitmap();
         Map<Integer, PointF> pointFs = getEdgePoints(tmp);
-
         polygonView.setPoints(pointFs);
         polygonView.setVisibility(View.VISIBLE);
         int padding = (int) getResources().getDimension(R.dimen.scan_padding);
@@ -97,6 +100,7 @@ public class ImageDisplayActivity extends AppCompatActivity {
     private List<PointF> getContourEdgePoints(Bitmap bitmap) {
         MatOfPoint2f point2f = nativeClass.getPoint(bitmap);
         List<Point> points;
+
         if (point2f == null) {
             Point[] array_points = new Point[4];
             array_points[0] = new Point(0, 0);
