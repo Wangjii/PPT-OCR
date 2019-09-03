@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="图片"
+        android:icon="@drawable/ic_image_black_24dp"/>
+    <item android:title="OCR"
+        android:icon="@drawable/ic_assistant_black_24dp"/>
+    <item android:title="翻译"
+        android:icon="@drawable/ic_g_translate_black_24dp"/>
+</menu>

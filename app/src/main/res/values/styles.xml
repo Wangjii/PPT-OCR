@@ -1,8 +1,10 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar" />
+    <style name="AppTheme.White" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:colorBackground">@color/white</item>
+    </style>
 
-    <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="AppTheme.Black" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:colorBackground">@color/black</item>
     </style>
 

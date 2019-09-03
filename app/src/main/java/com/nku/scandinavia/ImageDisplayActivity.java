@@ -104,9 +104,9 @@ public class ImageDisplayActivity extends AppCompatActivity {
         if (point2f == null) {
             Point[] array_points = new Point[4];
             array_points[0] = new Point(0, 0);
-            array_points[1] = new Point(0, bitmap.getWidth());
-            array_points[2] = new Point(bitmap.getHeight(), 0);
-            array_points[3] = new Point(bitmap.getHeight(), bitmap.getWidth());
+            array_points[1] = new Point(0, bitmap.getHeight() - 90);
+            array_points[2] = new Point(bitmap.getWidth() - 90, 0);
+            array_points[3] = new Point(bitmap.getWidth() - 90, bitmap.getHeight() - 90);
             points = Arrays.asList(array_points);
             Toast.makeText(this, "未找到轮廓，请手动选择", Toast.LENGTH_SHORT).show();
         } else {
