@@ -30,4 +30,5 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'pub.devrel:easypermissions:3.0.0'
     implementation 'com.rmtheis:tess-two:8.0.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
 }
