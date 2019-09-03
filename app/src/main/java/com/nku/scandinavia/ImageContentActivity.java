@@ -18,7 +18,8 @@ import java.io.InputStream;
 public class ImageContentActivity extends AppCompatActivity {
     TextView textView;
     TessBaseAPI baseApi = new TessBaseAPI();
-    private static final String DEFAULT_LANGUAGE = "chi_sim";
+//    private static final String DEFAULT_LANGUAGE = "chi_sim";
+    private static final String DEFAULT_LANGUAGE = "eng";
 
 
 
@@ -43,11 +44,12 @@ public class ImageContentActivity extends AppCompatActivity {
         String datapath = Environment.getExternalStorageDirectory() + "/tesseract";
         Log.e( "datapath: ", datapath);
         File dir = new File(datapath + "/tessdata");
-//        File dir = new File(datapath);
         if (!dir.exists()) {
             dir.mkdirs();
-            InputStream input = getResources().openRawResource(R.raw.chi_sim);
-            File file = new File(dir, "chi_sim.traineddata");
+//            InputStream input = getResources().openRawResource(R.raw.chi_sim);
+//            File file = new File(dir, "chi_sim.traineddata");
+            InputStream input = getResources().openRawResource(R.raw.eng);
+            File file = new File(dir, "eng.traineddata");
             FileOutputStream output = new FileOutputStream(file);
             byte[] buff = new byte[1024];
             int len = 0;

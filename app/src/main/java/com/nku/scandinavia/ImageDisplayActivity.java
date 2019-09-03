@@ -16,10 +16,10 @@ import com.nku.scandinavia.libs.PolygonView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.lang.String.valueOf;
+
 
 public class ImageDisplayActivity extends AppCompatActivity {
     ImageView selectedImageView;
@@ -59,7 +59,6 @@ public class ImageDisplayActivity extends AppCompatActivity {
         holderImageCrop = findViewById(R.id.holderImageCrop);
 
         selectedImageView = (ImageView) findViewById(R.id.imageView);
-//        selectedImageView.setImageBitmap(Constants.selectedImageBitmap);
 
         holderImageCrop.post(new Runnable() {
             @Override
@@ -104,6 +103,7 @@ public class ImageDisplayActivity extends AppCompatActivity {
             array_points[2]=new Point(bitmap.getWidth()-90,0);
             array_points[3]=new Point(bitmap.getWidth()-90,bitmap.getHeight());
             points=Arrays.asList(array_points);
+            Toast.makeText(this, "未发现边框,请手动选择", Toast.LENGTH_SHORT).show();
         }else{
             points= Arrays.asList(point2f.toArray());
         }

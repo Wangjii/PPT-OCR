@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -41,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private File cameraSavePath;//拍照照片名称
     private String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private Bitmap selectedImageBitmap;
+    int degree = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // 调用相册
     private void goGallery() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
         startActivityForResult(intent, 222);
     }
@@ -146,6 +149,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     photoPath = valueOf(cameraSavePath);
                     degree = getBitmapDegree(photoPath);
                     loadImageUriToBitmap(imageUri, degree);
+                    Log.e( "onActivityResult: ",valueOf(degree) );
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -188,7 +193,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @return 图片的旋转角度
      */
     private int getBitmapDegree(String path) {
-        int degree = 0;
         try {
             // 从指定路径下读取图片，并获取其EXIF信息
             ExifInterface exifInterface = new ExifInterface(path);
@@ -204,6 +208,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
                 case ExifInterface.ORIENTATION_ROTATE_270:
                     degree = 270;
+                    break;
+                default:
+                    degree=0;
                     break;
             }
         } catch (IOException e) {
