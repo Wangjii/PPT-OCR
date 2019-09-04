@@ -1,5 +1,7 @@
 package com.nku.scandinavia.helpers;
 
+import com.nku.scandinavia.baidu.MD5;
+
 import java.util.HashMap;
 import java.util.Map;
 

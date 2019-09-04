@@ -6,7 +6,7 @@
         android:icon="@drawable/ic_image_black_24dp"/>
     <item
         android:id="@+id/buttom_ocr"
-        android:title="OCR_button"
+        android:title="OCR"
         android:icon="@drawable/ic_assistant_black_24dp"/>
     <item
         android:id="@+id/buttom_trans"

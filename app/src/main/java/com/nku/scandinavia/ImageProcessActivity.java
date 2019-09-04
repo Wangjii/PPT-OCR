@@ -18,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Environment;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -44,7 +43,6 @@ public class ImageProcessActivity extends AppCompatActivity {
     private static final String DEFAULT_LANGUAGE = "eng";
     //    private static final String DEFAULT_LANGUAGE = "chi_sim";
     String recognizedText;
-
 
 
     @Override
@@ -93,9 +91,6 @@ public class ImageProcessActivity extends AppCompatActivity {
             }
         });
     }
-
-
-
 
 
     Runnable runnable = new Runnable() {
@@ -174,7 +169,7 @@ public class ImageProcessActivity extends AppCompatActivity {
         if (success) {
             baseApi.setImage(Constants.croppedImageBitmap);
             recognizedText = baseApi.getUTF8Text();
-            recognizedText=recognizedText.replace('\n', ' ');
+            recognizedText = recognizedText.replace('\n', ' ');
             return recognizedText;
         } else {
             recognizedText = "WARNING:could not initialize Tesseract data ...";
@@ -185,7 +180,7 @@ public class ImageProcessActivity extends AppCompatActivity {
 
     private static final String APP_ID = "20190903000331566";
     private static final String SECURITY_KEY = "RNuPntEEoO09xCaTA2HX";
-    Runnable runnable_trans=new Runnable() {
+    Runnable runnable_trans = new Runnable() {
         @Override
         public void run() {
             TransApi api = new TransApi(APP_ID, SECURITY_KEY);
@@ -193,9 +188,9 @@ public class ImageProcessActivity extends AppCompatActivity {
 
             try {
 //                JSONObject jsonObject = new JSONObject(api.getTransResult(recognizedText,"auto","zh"));
-                JSONObject jsonObject = new JSONObject(api.getTransResult(ocr_result_google.getText().toString().replace('\n',' '),"auto","zh"));
+                JSONObject jsonObject = new JSONObject(api.getTransResult(ocr_result_google.getText().toString().replace('\n', ' '), "auto", "zh"));
                 jsonObject = jsonObject.getJSONArray("trans_result").getJSONObject(0);
-                final String result=jsonObject.getString("dst");
+                final String result = jsonObject.getString("dst");
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
