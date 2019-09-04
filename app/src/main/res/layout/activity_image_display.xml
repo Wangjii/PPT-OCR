@@ -38,6 +38,17 @@
         android:orientation="horizontal">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/button_content"
+            style="@style/FloatButton.Done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            app:fabCustomSize="72dp"
+            app:srcCompat="@drawable/circle"
+            />
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/button_prev"
             style="@style/FloatButton.Back"
             android:layout_width="wrap_content"

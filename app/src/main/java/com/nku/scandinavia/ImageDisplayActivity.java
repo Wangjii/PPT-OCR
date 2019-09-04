@@ -40,6 +40,7 @@ public class ImageDisplayActivity extends AppCompatActivity {
     ImageView selectedImageView;
     FloatingActionButton nextButton;
     FloatingActionButton prevButton;
+    FloatingActionButton contentButton;
     FrameLayout holderImageCrop;
     Bitmap selectedImageBitmap;
 
@@ -57,6 +58,7 @@ public class ImageDisplayActivity extends AppCompatActivity {
     private void initComponents() {
         nativeClass = new NativeClass();
 
+        contentButton = findViewById(R.id.button_content);
         nextButton = findViewById(R.id.button_next);
         prevButton = findViewById(R.id.button_prev);
         polygonView = findViewById(R.id.polygon);
@@ -89,6 +91,7 @@ public class ImageDisplayActivity extends AppCompatActivity {
     private void initEvents() {
         nextButton.setOnClickListener(this.nextButtonClick);
         prevButton.setOnClickListener(this.prevButtonClick);
+        contentButton.setOnClickListener(this.contentButtonClick);
     }
 
     private Map<Integer, PointF> getEdgePoints(Bitmap bitmap) {
@@ -173,6 +176,14 @@ public class ImageDisplayActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             finish();
+        }
+    };
+    private View.OnClickListener contentButtonClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Constants.croppedImageBitmap = getCroppedImage();
+            Intent intent = new Intent(getApplicationContext(), ImageProcess2Activity.class);
+            startActivity(intent);
         }
     };
 }
