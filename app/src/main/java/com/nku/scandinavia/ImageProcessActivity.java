@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.googlecode.tesseract.android.TessBaseAPI;
 import com.nku.scandinavia.baidu.Base64Util;
 import com.nku.scandinavia.baidu.GsonUtils;
@@ -19,7 +21,10 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -40,11 +45,13 @@ public class ImageProcessActivity extends AppCompatActivity {
     TextView ocr_result_tv;
     TextView ocr_result_google;
     TessBaseAPI baseApi = new TessBaseAPI();
+    private MaterialButton btn_denoise, btn_deblurr, btn_sharpen;
+    private HorizontalScrollView roll_option;
+    private boolean isVisible = false;
     private BottomNavigationView bottom_navigation;
     private static final String DEFAULT_LANGUAGE = "eng";
     //    private static final String DEFAULT_LANGUAGE = "chi_sim";
     String recognizedText;
-
 
 
     @Override
@@ -61,6 +68,19 @@ public class ImageProcessActivity extends AppCompatActivity {
     private void initComponents() {
 
         imageView = findViewById(R.id.croppedImageView);
+        //设置按钮不可见
+        btn_denoise = findViewById(R.id.button_denoise);
+        btn_denoise.setVisibility(View.GONE);
+        btn_denoise.setOnClickListener(this.btn_denoiseClick);
+        btn_deblurr = findViewById(R.id.button_deblurr);
+        btn_deblurr.setVisibility(View.GONE);
+        btn_deblurr.setOnClickListener(this.btn_deblurrClick);
+        btn_sharpen = findViewById(R.id.button_sharpen);
+        btn_sharpen.setVisibility(View.GONE);
+        btn_sharpen.setOnClickListener(this.btn_sharpenClick);
+        //
+        roll_option = findViewById(R.id.roll_process_option);
+        btn_sharpen.setVisibility(View.GONE);
         imageView.setImageBitmap(Constants.croppedImageBitmap);
         ocr_result_tv = findViewById(R.id.ocr_result);
         ocr_result_google = findViewById(R.id.googel_ocr_result);
@@ -74,7 +94,19 @@ public class ImageProcessActivity extends AppCompatActivity {
                             MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.buttom_enhance:
-
+                        if(isVisible){
+                            btn_denoise.setVisibility(View.GONE);
+                            btn_deblurr.setVisibility(View.GONE);
+                            btn_sharpen.setVisibility(View.GONE);
+                            roll_option.setVisibility(View.GONE);
+                            isVisible = false;
+                        }else{
+                            btn_denoise.setVisibility(View.VISIBLE);
+                            btn_deblurr.setVisibility(View.VISIBLE);
+                            btn_sharpen.setVisibility(View.VISIBLE);
+                            roll_option.setVisibility(View.VISIBLE);
+                            isVisible = true;
+                        }
                         break;
                     case R.id.buttom_ocr:
 
@@ -88,6 +120,12 @@ public class ImageProcessActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         break;
+                    default:
+                        btn_denoise.setVisibility(View.VISIBLE);
+                        btn_deblurr.setVisibility(View.VISIBLE);
+                        btn_sharpen.setVisibility(View.VISIBLE);
+                        roll_option.setVisibility(View.VISIBLE);
+                        isVisible = false;
                 }
                 return true;
             }
@@ -221,5 +259,24 @@ public class ImageProcessActivity extends AppCompatActivity {
         ocr_result_tv.setText(stringBuilder.toString());
     }
 
+    private View.OnClickListener btn_denoiseClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
 
+        }
+    };
+
+    private View.OnClickListener btn_deblurrClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
+        }
+    };
+
+    private View.OnClickListener btn_sharpenClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
+        }
+    };
 }
