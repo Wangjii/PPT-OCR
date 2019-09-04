@@ -14,3 +14,5 @@
 .cxx
 /openCVLibrary347/build
 /app/src/main/jniLibs
+/openCVLibrary347/build/intermediates/compile_only_not_namespaced_r_class_jar/debug/R.jar
+/openCVLibrary347/build/intermediates/incremental/packageDebugResources/compile-file-map.properties

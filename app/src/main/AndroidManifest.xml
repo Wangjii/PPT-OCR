@@ -3,9 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.nku.scandinavia">
     <!-- 联网权限 -->
-    <uses-permission android:name="android.permission.INTERNET" /> <!-- 读写内存块权限 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 读写内存块权限 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 调用相机权限 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- 调用相机权限 -->
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
@@ -17,9 +19,7 @@
         android:theme="@style/AppTheme.Black"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ImageProcess2Activity"/>
-        <activity android:name=".ImageContentActivity"
-            android:theme="@style/AppTheme.White"/>
+
         <activity
             android:name=".ImageProcessActivity"
             android:label="@string/title_activity_image_process"

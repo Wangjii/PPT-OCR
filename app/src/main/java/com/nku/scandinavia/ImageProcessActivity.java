@@ -4,8 +4,10 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import com.googlecode.tesseract.android.TessBaseAPI;
 import com.nku.scandinavia.baidu.Base64Util;
 import com.nku.scandinavia.baidu.GsonUtils;
@@ -20,9 +22,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Environment;
 import android.util.Log;
 import android.view.MenuItem;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
+
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -45,9 +49,12 @@ public class ImageProcessActivity extends AppCompatActivity {
     TextView ocr_result_tv;
     TextView ocr_result_google;
     TessBaseAPI baseApi = new TessBaseAPI();
+
     private MaterialButton btn_denoise, btn_deblurr, btn_sharpen;
     private HorizontalScrollView roll_option;
     private boolean isVisible = false;
+
+
     private BottomNavigationView bottom_navigation;
     private static final String DEFAULT_LANGUAGE = "eng";
     //    private static final String DEFAULT_LANGUAGE = "chi_sim";
@@ -94,6 +101,7 @@ public class ImageProcessActivity extends AppCompatActivity {
                             MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.buttom_enhance:
+
                         if(isVisible){
                             btn_denoise.setVisibility(View.GONE);
                             btn_deblurr.setVisibility(View.GONE);
@@ -107,6 +115,8 @@ public class ImageProcessActivity extends AppCompatActivity {
                             roll_option.setVisibility(View.VISIBLE);
                             isVisible = true;
                         }
+
+
                         break;
                     case R.id.buttom_ocr:
 
@@ -120,18 +130,19 @@ public class ImageProcessActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         break;
+
                     default:
                         btn_denoise.setVisibility(View.VISIBLE);
                         btn_deblurr.setVisibility(View.VISIBLE);
                         btn_sharpen.setVisibility(View.VISIBLE);
                         roll_option.setVisibility(View.VISIBLE);
                         isVisible = false;
+
                 }
                 return true;
             }
         });
     }
-
 
 
 
@@ -212,7 +223,7 @@ public class ImageProcessActivity extends AppCompatActivity {
         if (success) {
             baseApi.setImage(Constants.croppedImageBitmap);
             recognizedText = baseApi.getUTF8Text();
-            recognizedText=recognizedText.replace('\n', ' ');
+            recognizedText = recognizedText.replace('\n', ' ');
             return recognizedText;
         } else {
             recognizedText = "WARNING:could not initialize Tesseract data ...";
@@ -223,17 +234,16 @@ public class ImageProcessActivity extends AppCompatActivity {
 
     private static final String APP_ID = "20190903000331566";
     private static final String SECURITY_KEY = "RNuPntEEoO09xCaTA2HX";
-    Runnable runnable_trans=new Runnable() {
+
+    Runnable runnable_trans = new Runnable() {
         @Override
         public void run() {
             TransApi api = new TransApi(APP_ID, SECURITY_KEY);
-
-
             try {
 //                JSONObject jsonObject = new JSONObject(api.getTransResult(recognizedText,"auto","zh"));
-                JSONObject jsonObject = new JSONObject(api.getTransResult(ocr_result_google.getText().toString().replace('\n',' '),"auto","zh"));
+                JSONObject jsonObject = new JSONObject(api.getTransResult(ocr_result_google.getText().toString().replace('\n', ' '), "auto", "zh"));
                 jsonObject = jsonObject.getJSONArray("trans_result").getJSONObject(0);
-                final String result=jsonObject.getString("dst");
+                final String result = jsonObject.getString("dst");
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -258,6 +268,8 @@ public class ImageProcessActivity extends AppCompatActivity {
         }
         ocr_result_tv.setText(stringBuilder.toString());
     }
+
+
 
     private View.OnClickListener btn_denoiseClick = new View.OnClickListener() {
         @Override

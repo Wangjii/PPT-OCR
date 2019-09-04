@@ -1,4 +1,4 @@
-package com.nku.scandinavia.helpers;
+package com.nku.scandinavia.baidu;
 
 import java.io.File;
 import java.io.FileInputStream;

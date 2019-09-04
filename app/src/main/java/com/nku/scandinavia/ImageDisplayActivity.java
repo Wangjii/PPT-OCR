@@ -16,10 +16,6 @@ import com.nku.scandinavia.libs.PolygonView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-
-import android.util.Log;
-import android.view.Gravity;
-
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -28,7 +24,6 @@ import android.widget.Toast;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -40,7 +35,6 @@ public class ImageDisplayActivity extends AppCompatActivity {
     ImageView selectedImageView;
     FloatingActionButton nextButton;
     FloatingActionButton prevButton;
-    FloatingActionButton contentButton;
     FrameLayout holderImageCrop;
     Bitmap selectedImageBitmap;
 
@@ -58,7 +52,6 @@ public class ImageDisplayActivity extends AppCompatActivity {
     private void initComponents() {
         nativeClass = new NativeClass();
 
-        contentButton = findViewById(R.id.button_content);
         nextButton = findViewById(R.id.button_next);
         prevButton = findViewById(R.id.button_prev);
         polygonView = findViewById(R.id.polygon);
@@ -91,7 +84,6 @@ public class ImageDisplayActivity extends AppCompatActivity {
     private void initEvents() {
         nextButton.setOnClickListener(this.nextButtonClick);
         prevButton.setOnClickListener(this.prevButtonClick);
-        contentButton.setOnClickListener(this.contentButtonClick);
     }
 
     private Map<Integer, PointF> getEdgePoints(Bitmap bitmap) {
@@ -178,12 +170,5 @@ public class ImageDisplayActivity extends AppCompatActivity {
             finish();
         }
     };
-    private View.OnClickListener contentButtonClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Constants.croppedImageBitmap = getCroppedImage();
-            Intent intent = new Intent(getApplicationContext(), ImageProcess2Activity.class);
-            startActivity(intent);
-        }
-    };
+
 }
