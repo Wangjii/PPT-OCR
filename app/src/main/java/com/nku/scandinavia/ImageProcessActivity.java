@@ -45,6 +45,7 @@ public class ImageProcessActivity extends AppCompatActivity {
     ImageView imageView;
     String apiPath = "https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic";
     EditText ocr_result_tv;
+    EditText ocr_result_trans;
     TextView ocr_result_google;
     TessBaseAPI baseApi = new TessBaseAPI();
 
@@ -90,8 +91,10 @@ public class ImageProcessActivity extends AppCompatActivity {
         ocr_result_tv = findViewById(R.id.ocr_result);
         ocr_result_google = findViewById(R.id.googel_ocr_result);
 
-        bottom_navigation = findViewById(R.id.bottom_navigation);
+        ocr_result_trans = findViewById(R.id.trans_result);
+        ocr_result_trans.setVisibility(View.GONE);
 
+        bottom_navigation = findViewById(R.id.bottom_navigation);
         bottom_navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(
@@ -100,13 +103,13 @@ public class ImageProcessActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.buttom_enhance:
 
-                        if(isVisible){
+                        if (isVisible) {
                             btn_denoise.setVisibility(View.GONE);
                             btn_deblurr.setVisibility(View.GONE);
                             btn_sharpen.setVisibility(View.GONE);
                             roll_option.setVisibility(View.GONE);
                             isVisible = false;
-                        }else{
+                        } else {
                             btn_denoise.setVisibility(View.VISIBLE);
                             btn_deblurr.setVisibility(View.VISIBLE);
                             btn_sharpen.setVisibility(View.VISIBLE);
@@ -120,20 +123,29 @@ public class ImageProcessActivity extends AppCompatActivity {
 
                         break;
                     case R.id.buttom_trans:
-                        new Thread(runnable_trans).start();
                         try {
-                            Thread.sleep(10);
-                            ocr_result_google.setText("正在翻译……");
+                            if (isVisible) {
+                                ocr_result_trans.setVisibility(View.GONE);
+                                isVisible = false;
+                            } else {
+                                Thread.sleep(10);
+                                ocr_result_trans.setVisibility(View.VISIBLE);
+                                ocr_result_trans.setText("正在翻译……");
+                                new Thread(runnable_trans).start();
+                                isVisible = true;
+                            }
+
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                         break;
 
                     default:
-                        btn_denoise.setVisibility(View.VISIBLE);
-                        btn_deblurr.setVisibility(View.VISIBLE);
-                        btn_sharpen.setVisibility(View.VISIBLE);
-                        roll_option.setVisibility(View.VISIBLE);
+                        btn_denoise.setVisibility(View.GONE);
+                        btn_deblurr.setVisibility(View.GONE);
+                        btn_sharpen.setVisibility(View.GONE);
+                        roll_option.setVisibility(View.GONE);
+                        ocr_result_trans.setVisibility(View.GONE);
                         isVisible = false;
 
                 }
@@ -141,8 +153,6 @@ public class ImageProcessActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
 
     Runnable runnable = new Runnable() {
@@ -245,8 +255,8 @@ public class ImageProcessActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ocr_result_google.setText("");
-                        ocr_result_google.setText(result);
+                        ocr_result_trans.setText("");
+                        ocr_result_trans.setText(result);
                     }
                 });
             } catch (JSONException e) {
@@ -266,7 +276,6 @@ public class ImageProcessActivity extends AppCompatActivity {
         }
         ocr_result_tv.setText(stringBuilder.toString());
     }
-
 
 
     private View.OnClickListener btn_denoiseClick = new View.OnClickListener() {
