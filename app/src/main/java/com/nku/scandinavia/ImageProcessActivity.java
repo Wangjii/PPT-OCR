@@ -6,7 +6,6 @@ import android.os.Bundle;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import com.googlecode.tesseract.android.TessBaseAPI;
 import com.nku.scandinavia.baidu.Base64Util;
@@ -24,11 +23,10 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import android.view.View;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -46,7 +44,7 @@ import java.util.Map;
 public class ImageProcessActivity extends AppCompatActivity {
     ImageView imageView;
     String apiPath = "https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic";
-    TextView ocr_result_tv;
+    EditText ocr_result_tv;
     TextView ocr_result_google;
     TessBaseAPI baseApi = new TessBaseAPI();
 
@@ -184,10 +182,10 @@ public class ImageProcessActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (result.isEmpty()) {
-                            ocr_result_google.setText("识别结果为空");
+                            ocr_result_google.setText("null");
                         } else {
                             ocr_result_google.setText("");
-                            ocr_result_google.append("识别结果为:\n" + result.replace('\n', ' '));
+                            ocr_result_google.append(result.replace('\n', ' '));
                         }
                     }
                 });
@@ -241,7 +239,7 @@ public class ImageProcessActivity extends AppCompatActivity {
             TransApi api = new TransApi(APP_ID, SECURITY_KEY);
             try {
 //                JSONObject jsonObject = new JSONObject(api.getTransResult(recognizedText,"auto","zh"));
-                JSONObject jsonObject = new JSONObject(api.getTransResult(ocr_result_google.getText().toString().replace('\n', ' '), "auto", "zh"));
+                JSONObject jsonObject = new JSONObject(api.getTransResult(ocr_result_tv.getText().toString().replace('\n', ' '), "auto", "zh"));
                 jsonObject = jsonObject.getJSONArray("trans_result").getJSONObject(0);
                 final String result = jsonObject.getString("dst");
                 runOnUiThread(new Runnable() {
