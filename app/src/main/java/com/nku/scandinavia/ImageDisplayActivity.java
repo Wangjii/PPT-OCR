@@ -98,10 +98,10 @@ public class ImageDisplayActivity extends AppCompatActivity {
 
         if (point2f == null) {
             Point[] array_points = new Point[4];
-            array_points[0] = new Point(0, 0);
-            array_points[1] = new Point(0, bitmap.getHeight() - 90);
-            array_points[2] = new Point(bitmap.getWidth() - 90, 0);
-            array_points[3] = new Point(bitmap.getWidth() - 90, bitmap.getHeight() - 90);
+            array_points[0] = new Point(20, 20);
+            array_points[1] = new Point(20, bitmap.getHeight()-20);
+            array_points[2] = new Point(bitmap.getWidth()-20, 20);
+            array_points[3] = new Point(bitmap.getWidth()-20, bitmap.getHeight()-20);
             points = Arrays.asList(array_points);
             Toast.makeText(this, "未找到轮廓，请手动选择", Toast.LENGTH_SHORT).show();
         } else {
@@ -143,14 +143,14 @@ public class ImageDisplayActivity extends AppCompatActivity {
         float xRatio = (float) selectedImageBitmap.getWidth() / selectedImageView.getWidth();
         float yRatio = (float) selectedImageBitmap.getHeight() / selectedImageView.getHeight();
 
-        float x1 = (points.get(0).x) * xRatio;
-        float x2 = (points.get(1).x) * xRatio;
-        float x3 = (points.get(2).x) * xRatio;
-        float x4 = (points.get(3).x) * xRatio;
-        float y1 = (points.get(0).y) * yRatio;
-        float y2 = (points.get(1).y) * yRatio;
-        float y3 = (points.get(2).y) * yRatio;
-        float y4 = (points.get(3).y) * yRatio;
+        float x1 = (points.get(0).x+20) * xRatio;
+        float x2 = (points.get(1).x+20) * xRatio;
+        float x3 = (points.get(2).x+20) * xRatio;
+        float x4 = (points.get(3).x+20) * xRatio;
+        float y1 = (points.get(0).y+20) * yRatio;
+        float y2 = (points.get(1).y+20) * yRatio;
+        float y3 = (points.get(2).y+20) * yRatio;
+        float y4 = (points.get(3).y+20) * yRatio;
 
         return nativeClass.getScannedBitmap(selectedImageBitmap, x1, y1, x2, y2, x3, y3, x4, y4);
     }

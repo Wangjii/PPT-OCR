@@ -20,7 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Environment;
-import android.util.Log;
 import android.view.MenuItem;
 
 import android.view.View;
@@ -48,11 +47,7 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
-import static java.lang.String.valueOf;
-import static org.opencv.core.CvType.CV_8UC3;
-import static org.opencv.imgproc.Imgproc.COLOR_RGBA2GRAY;
 import static org.opencv.imgproc.Imgproc.GaussianBlur;
-import static org.opencv.imgproc.Imgproc.bilateralFilter;
 
 public class ImageProcessActivity extends AppCompatActivity {
     ImageView imageView;
@@ -62,13 +57,11 @@ public class ImageProcessActivity extends AppCompatActivity {
     TextView ocr_result_google;
     TessBaseAPI baseApi = new TessBaseAPI();
 
-    private MaterialButton btn_denoise, btn_deblurr, btn_sharpen, btn_original;
+    private MaterialButton btn_denoise, btn_sharpen, btn_original;
     private HorizontalScrollView roll_option;
     private boolean isVisible = false;
     private boolean trans_isVisible = false;
-    private boolean mnist_isVisible = false;
     private boolean mark = false;
-
 
 
     private BottomNavigationView bottom_navigation;
@@ -95,9 +88,6 @@ public class ImageProcessActivity extends AppCompatActivity {
         btn_denoise = findViewById(R.id.button_denoise);
         btn_denoise.setVisibility(View.GONE);
         btn_denoise.setOnClickListener(this.btn_denoiseClick);
-        btn_deblurr = findViewById(R.id.button_deblurr);
-        btn_deblurr.setVisibility(View.GONE);
-        btn_deblurr.setOnClickListener(this.btn_deblurrClick);
         btn_sharpen = findViewById(R.id.button_sharpen);
         btn_sharpen.setVisibility(View.GONE);
         btn_sharpen.setOnClickListener(this.btn_sharpenClick);
@@ -122,68 +112,56 @@ public class ImageProcessActivity extends AppCompatActivity {
                             MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.buttom_enhance:
-
                         if (isVisible) {
                             btn_denoise.setVisibility(View.GONE);
-                            btn_deblurr.setVisibility(View.GONE);
                             btn_sharpen.setVisibility(View.GONE);
                             btn_original.setVisibility(View.GONE);
                             roll_option.setVisibility(View.GONE);
                             isVisible = false;
                         } else {
                             btn_denoise.setVisibility(View.VISIBLE);
-                            btn_deblurr.setVisibility(View.VISIBLE);
                             btn_sharpen.setVisibility(View.VISIBLE);
                             btn_original.setVisibility(View.VISIBLE);
                             roll_option.setVisibility(View.VISIBLE);
                             isVisible = true;
                         }
-
                         break;
+
                     case R.id.buttom_ocr:
                         new Thread(runnable).start();
                         ocr_result_tv.setText("Loading...");
                         break;
-                    case R.id.buttom_trans:
 
-                        if (trans_isVisible) {
-                            ocr_result_trans.setVisibility(View.GONE);
-                            trans_isVisible = false;
-                        } else {
-                            new Thread(runnable_trans).start();
-                            ocr_result_trans.setVisibility(View.VISIBLE);
-                            ocr_result_trans.setText("正在翻译……");
-                            trans_isVisible = true;
+                    case R.id.buttom_trans:
+                        if (!isVisible) {
+                            if (trans_isVisible) {
+                                ocr_result_trans.setVisibility(View.GONE);
+                                trans_isVisible = false;
+                            } else {
+                                new Thread(runnable_trans).start();
+                                ocr_result_trans.setVisibility(View.VISIBLE);
+                                ocr_result_trans.setText("正在翻译……");
+                                trans_isVisible = true;
+                            }
                         }
                         break;
 
                     case R.id.buttom_mnist:
-
-                        if (mnist_isVisible) {
-                            ocr_result_trans.setVisibility(View.GONE);
-                            mnist_isVisible = false;
-                        } else {
+                        if (!(isVisible | trans_isVisible)) {
                             new Thread(runnable_mnist).start();
-                            ocr_result_trans.setVisibility(View.VISIBLE);
-                            ocr_result_trans.setText("识别中……");
-                            mnist_isVisible = true;
                         }
                         break;
 
-
                     default:
                         btn_denoise.setVisibility(View.GONE);
-                        btn_deblurr.setVisibility(View.GONE);
                         btn_sharpen.setVisibility(View.GONE);
                         roll_option.setVisibility(View.GONE);
                         ocr_result_trans.setVisibility(View.GONE);
                         isVisible = false;
                         trans_isVisible = false;
-                        mnist_isVisible = false;
-
-
                 }
                 return true;
+
             }
         });
     }
@@ -191,11 +169,12 @@ public class ImageProcessActivity extends AppCompatActivity {
 
     Runnable runnable = new Runnable() {
         Bitmap image;
+
         @Override
         public void run() {
-            if(mark){
+            if (mark) {
                 image = Constants.processedImageBitmap;
-            }else {
+            } else {
                 image = Constants.croppedImageBitmap;
             }
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -206,7 +185,6 @@ public class ImageProcessActivity extends AppCompatActivity {
                 String params = URLEncoder.encode("image", "UTF-8") + "=" + URLEncoder.encode(imgBase64, "UTF-8");
                 String accessToken = "24.a09ae297b4d6c2162ef5701a2f962034.2592000.1570083344.282335-17167573";
                 final String result = HttpUtil.post(apiPath, accessToken, params);
-                Log.e("run: ", result);
                 OCResult ocrResult = GsonUtils.fromJson(result, OCResult.class);
                 final List<Map<String, String>> result_array = ocrResult.words_result;
                 runOnUiThread(new Runnable() {
@@ -216,7 +194,6 @@ public class ImageProcessActivity extends AppCompatActivity {
                     }
                 });
             } catch (Exception e) {
-                Log.e("run: ", e.toString());
                 e.printStackTrace();
             }
         }
@@ -234,7 +211,7 @@ public class ImageProcessActivity extends AppCompatActivity {
                             ocr_result_google.setText("null");
                         } else {
                             ocr_result_google.setText("");
-                            ocr_result_google.append(result.replace('\n', ' '));
+                            ocr_result_google.append(result);
                         }
                     }
                 });
@@ -246,7 +223,6 @@ public class ImageProcessActivity extends AppCompatActivity {
 
     private String initTessBaseAPI() throws IOException {
         String datapath = Environment.getExternalStorageDirectory() + "/tesseract";
-        Log.e("datapath: ", datapath);
         File dir = new File(datapath + "/tessdata");
         if (!dir.exists()) {
             if (dir.mkdirs()) {
@@ -262,7 +238,6 @@ public class ImageProcessActivity extends AppCompatActivity {
                 }
                 input.close();
                 output.close();
-
             }
 
         }
@@ -321,8 +296,7 @@ public class ImageProcessActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    ocr_result_trans.setText("");
-                    ocr_result_trans.setText(res);
+                    Toast.makeText(getApplicationContext(), res, Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -344,13 +318,13 @@ public class ImageProcessActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             Mat src = new Mat();
-            if(mark){
-                Utils.bitmapToMat(Constants.processedImageBitmap,src);
-            }else{
+            if (mark) {
+                Utils.bitmapToMat(Constants.processedImageBitmap, src);
+            } else {
                 Utils.bitmapToMat(Constants.croppedImageBitmap, src);
             }
             Mat dst = new Mat();
-            GaussianBlur(src, dst, new Size(5,5), 3, 3);
+            GaussianBlur(src, dst, new Size(5, 5), 3, 3);
             Bitmap img_denoise = Bitmap.createBitmap(dst.width(), dst.height(), Bitmap.Config.ARGB_8888);
             Utils.matToBitmap(dst, img_denoise);
             imageView.setImageBitmap(img_denoise);
@@ -363,27 +337,21 @@ public class ImageProcessActivity extends AppCompatActivity {
         }
     };
 
-    private View.OnClickListener btn_deblurrClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-
-        }
-    };
 
     private View.OnClickListener btn_sharpenClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             Mat src = new Mat();
-            if(mark){
-                Utils.bitmapToMat(Constants.processedImageBitmap,src);
-            }else{
+            if (mark) {
+                Utils.bitmapToMat(Constants.processedImageBitmap, src);
+            } else {
                 Utils.bitmapToMat(Constants.croppedImageBitmap, src);
             }
             Mat dst = new Mat();
             //锐化算子
             Mat k = new Mat(3, 3, CvType.CV_32FC1);
-            float[] data = new float[]{0,-1,0,-1,5,-1,0,-1,0};
-            k.put(0,0,data);
+            float[] data = new float[]{0, -1, 0, -1, 5, -1, 0, -1, 0};
+            k.put(0, 0, data);
             //锐化
             Imgproc.filter2D(src, dst, -1, k);
             //

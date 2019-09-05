@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.nku.scandinavia.R;
+
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class PolygonView extends FrameLayout {
 
@@ -87,7 +90,7 @@ public class PolygonView extends FrameLayout {
     private void initPaint() {
         paint = new Paint();
         paint.setColor(getResources().getColor(R.color.blue));
-        paint.setStrokeWidth(2);
+        paint.setStrokeWidth(8);
         paint.setAntiAlias(true);
     }
 
@@ -134,17 +137,17 @@ public class PolygonView extends FrameLayout {
     }
 
     private void setPointsCoordinates(Map<Integer, PointF> pointFMap) {
-        pointer1.setX(pointFMap.get(0).x);
-        pointer1.setY(pointFMap.get(0).y);
+        pointer1.setX(pointFMap.get(0).x-20);
+        pointer1.setY(pointFMap.get(0).y-20);
 
-        pointer2.setX(pointFMap.get(1).x);
-        pointer2.setY(pointFMap.get(1).y);
+        pointer2.setX(pointFMap.get(1).x-20);
+        pointer2.setY(pointFMap.get(1).y-20);
 
-        pointer3.setX(pointFMap.get(2).x);
-        pointer3.setY(pointFMap.get(2).y);
+        pointer3.setX(pointFMap.get(2).x-20);
+        pointer3.setY(pointFMap.get(2).y-20);
 
-        pointer4.setX(pointFMap.get(3).x);
-        pointer4.setY(pointFMap.get(3).y);
+        pointer4.setX(pointFMap.get(3).x-20);
+        pointer4.setY(pointFMap.get(3).y-20);
     }
 
     @Override

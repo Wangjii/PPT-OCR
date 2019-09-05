@@ -110,15 +110,7 @@
             app:iconGravity="textStart"
             android:layout_marginLeft="16dp"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_deblurr"
-            style="@style/Widget.MaterialComponents.Button.Icon"
-            android:layout_width="130dp"
-            android:layout_height="wrap_content"
-            android:paddingVertical="10dp"
-            android:text="去模糊"
-            app:iconGravity="textStart"
-            android:layout_marginLeft="16dp"/>
+
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_sharpen"
