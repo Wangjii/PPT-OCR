@@ -14,6 +14,7 @@ import com.nku.scandinavia.baidu.HttpUtil;
 import com.nku.scandinavia.baidu.OCResult;
 import com.nku.scandinavia.helpers.Constants;
 import com.nku.scandinavia.helpers.TransApi;
+import com.nku.scandinavia.libs.PredictionTF;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -52,6 +53,8 @@ public class ImageProcessActivity extends AppCompatActivity {
     private MaterialButton btn_denoise, btn_deblurr, btn_sharpen;
     private HorizontalScrollView roll_option;
     private boolean isVisible = false;
+    private boolean trans_isVisible = false;
+    private boolean mnist_isVisible = false;
 
 
     private BottomNavigationView bottom_navigation;
@@ -123,22 +126,31 @@ public class ImageProcessActivity extends AppCompatActivity {
 
                         break;
                     case R.id.buttom_trans:
-                        try {
-                            if (isVisible) {
-                                ocr_result_trans.setVisibility(View.GONE);
-                                isVisible = false;
-                            } else {
-                                Thread.sleep(10);
-                                ocr_result_trans.setVisibility(View.VISIBLE);
-                                ocr_result_trans.setText("正在翻译……");
-                                new Thread(runnable_trans).start();
-                                isVisible = true;
-                            }
 
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                        if (trans_isVisible) {
+                            ocr_result_trans.setVisibility(View.GONE);
+                            trans_isVisible = false;
+                        } else {
+                            new Thread(runnable_trans).start();
+                            ocr_result_trans.setVisibility(View.VISIBLE);
+                            ocr_result_trans.setText("正在翻译……");
+                            trans_isVisible = true;
                         }
                         break;
+
+                    case R.id.buttom_mnist:
+
+                        if (mnist_isVisible) {
+                            ocr_result_trans.setVisibility(View.GONE);
+                            mnist_isVisible = false;
+                        } else {
+                            new Thread(runnable_mnist).start();
+                            ocr_result_trans.setVisibility(View.VISIBLE);
+                            ocr_result_trans.setText("识别中……");
+                            mnist_isVisible = true;
+                        }
+                        break;
+
 
                     default:
                         btn_denoise.setVisibility(View.GONE);
@@ -147,6 +159,8 @@ public class ImageProcessActivity extends AppCompatActivity {
                         roll_option.setVisibility(View.GONE);
                         ocr_result_trans.setVisibility(View.GONE);
                         isVisible = false;
+                        trans_isVisible = false;
+                        mnist_isVisible = false;
 
                 }
                 return true;
@@ -248,7 +262,6 @@ public class ImageProcessActivity extends AppCompatActivity {
         public void run() {
             TransApi api = new TransApi(APP_ID, SECURITY_KEY);
             try {
-//                JSONObject jsonObject = new JSONObject(api.getTransResult(recognizedText,"auto","zh"));
                 JSONObject jsonObject = new JSONObject(api.getTransResult(ocr_result_tv.getText().toString().replace('\n', ' '), "auto", "zh"));
                 jsonObject = jsonObject.getJSONArray("trans_result").getJSONObject(0);
                 final String result = jsonObject.getString("dst");
@@ -263,6 +276,30 @@ public class ImageProcessActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
+        }
+    };
+
+
+    private static final String MODEL_FILE = "file:///android_asset/mnist.pb"; //模型存放路径
+
+    Runnable runnable_mnist = new Runnable() {
+        PredictionTF preTF;
+        String res;
+
+        @Override
+        public void run() {
+            preTF = new PredictionTF(getAssets(), MODEL_FILE);//输入模型存放路径，并加载TensoFlow模型
+            int[] result = preTF.getPredict(Constants.croppedImageBitmap);
+            for (int i = 0; i < result.length; i++) {
+                res = String.valueOf(result[i]);
+            }
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ocr_result_trans.setText("");
+                    ocr_result_trans.setText(res);
+                }
+            });
         }
     };
 

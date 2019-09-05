@@ -10,7 +10,9 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        ndk { abiFilters "armeabi", "armeabi-v7a"}// 其他忽略
+        ndk {
+            abiFilters "armeabi-v7a"
+        }// 其他忽略
     }
     buildTypes {
         release {
@@ -33,4 +35,6 @@ dependencies {
     implementation 'pub.devrel:easypermissions:3.0.0'
     implementation 'com.rmtheis:tess-two:8.0.0'
     implementation 'com.google.code.gson:gson:2.8.5'
+    implementation files('src/main/jniLibs/libandroid_tensorflow_inference_java.jar')
+
 }
