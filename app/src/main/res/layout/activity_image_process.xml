@@ -69,7 +69,6 @@
             android:layout_height="wrap_content"
             android:paddingVertical="10dp"
             android:text="去噪"
-            app:icon="@drawable/ic_camera_black_24dp"
             app:iconGravity="textStart"
             android:layout_marginLeft="16dp"/>
 
@@ -80,7 +79,6 @@
             android:layout_height="wrap_content"
             android:paddingVertical="10dp"
             android:text="去模糊"
-            app:icon="@drawable/ic_camera_black_24dp"
             app:iconGravity="textStart"
             android:layout_marginLeft="16dp"/>
 
@@ -89,9 +87,18 @@
             style="@style/Widget.MaterialComponents.Button.Icon"
             android:layout_width="130dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
             android:paddingVertical="10dp"
             android:text="锐化"
-            app:icon="@drawable/ic_camera_black_24dp"
+            app:iconGravity="textStart" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_original"
+            style="@style/Widget.MaterialComponents.Button.Icon"
+            android:layout_width="130dp"
+            android:layout_height="wrap_content"
+            android:paddingVertical="10dp"
+            android:text="原图"
             android:layout_marginLeft="16dp"
             app:iconGravity="textStart" />
     </LinearLayout>

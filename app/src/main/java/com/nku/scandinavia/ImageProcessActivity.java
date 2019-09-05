@@ -30,9 +30,15 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opencv.android.Utils;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -43,6 +49,12 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.String.valueOf;
+import static org.opencv.core.CvType.CV_8UC3;
+import static org.opencv.imgproc.Imgproc.COLOR_RGBA2GRAY;
+import static org.opencv.imgproc.Imgproc.GaussianBlur;
+import static org.opencv.imgproc.Imgproc.bilateralFilter;
+
 public class ImageProcessActivity extends AppCompatActivity {
     ImageView imageView;
     String apiPath = "https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic";
@@ -50,9 +62,10 @@ public class ImageProcessActivity extends AppCompatActivity {
     TextView ocr_result_google;
     TessBaseAPI baseApi = new TessBaseAPI();
 
-    private MaterialButton btn_denoise, btn_deblurr, btn_sharpen;
+    private MaterialButton btn_denoise, btn_deblurr, btn_sharpen, btn_original;
     private HorizontalScrollView roll_option;
     private boolean isVisible = false;
+    private boolean mark = false;
 
 
     private BottomNavigationView bottom_navigation;
@@ -85,6 +98,9 @@ public class ImageProcessActivity extends AppCompatActivity {
         btn_sharpen = findViewById(R.id.button_sharpen);
         btn_sharpen.setVisibility(View.GONE);
         btn_sharpen.setOnClickListener(this.btn_sharpenClick);
+        btn_original = findViewById(R.id.button_original);
+        btn_original.setVisibility(View.GONE);
+        btn_original.setOnClickListener(this.btn_originalClick);
         //
         roll_option = findViewById(R.id.roll_process_option);
         btn_sharpen.setVisibility(View.GONE);
@@ -106,20 +122,22 @@ public class ImageProcessActivity extends AppCompatActivity {
                             btn_denoise.setVisibility(View.GONE);
                             btn_deblurr.setVisibility(View.GONE);
                             btn_sharpen.setVisibility(View.GONE);
+                            btn_original.setVisibility(View.GONE);
                             roll_option.setVisibility(View.GONE);
                             isVisible = false;
                         }else{
                             btn_denoise.setVisibility(View.VISIBLE);
                             btn_deblurr.setVisibility(View.VISIBLE);
                             btn_sharpen.setVisibility(View.VISIBLE);
+                            btn_original.setVisibility(View.VISIBLE);
                             roll_option.setVisibility(View.VISIBLE);
                             isVisible = true;
                         }
 
-
                         break;
                     case R.id.buttom_ocr:
-
+                        new Thread(runnable).start();
+                        ocr_result_tv.setText("Loading...");
                         break;
                     case R.id.buttom_trans:
                         new Thread(runnable_trans).start();
@@ -131,13 +149,6 @@ public class ImageProcessActivity extends AppCompatActivity {
                         }
                         break;
 
-                    default:
-                        btn_denoise.setVisibility(View.VISIBLE);
-                        btn_deblurr.setVisibility(View.VISIBLE);
-                        btn_sharpen.setVisibility(View.VISIBLE);
-                        roll_option.setVisibility(View.VISIBLE);
-                        isVisible = false;
-
                 }
                 return true;
             }
@@ -148,9 +159,14 @@ public class ImageProcessActivity extends AppCompatActivity {
 
 
     Runnable runnable = new Runnable() {
+        Bitmap image;
         @Override
         public void run() {
-            Bitmap image = Constants.croppedImageBitmap;
+            if(mark){
+                image = Constants.processedImageBitmap;
+            }else {
+                image = Constants.croppedImageBitmap;
+            }
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             image.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
             try {
@@ -274,7 +290,23 @@ public class ImageProcessActivity extends AppCompatActivity {
     private View.OnClickListener btn_denoiseClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-
+            Mat src = new Mat();
+            if(mark){
+                Utils.bitmapToMat(Constants.processedImageBitmap,src);
+            }else{
+                Utils.bitmapToMat(Constants.croppedImageBitmap, src);
+            }
+            Mat dst = new Mat();
+            GaussianBlur(src, dst, new Size(5,5), 3, 3);
+            Bitmap img_denoise = Bitmap.createBitmap(dst.width(), dst.height(), Bitmap.Config.ARGB_8888);
+            Utils.matToBitmap(dst, img_denoise);
+            imageView.setImageBitmap(img_denoise);
+            //储存
+            Constants.processedImageBitmap = img_denoise;
+            Toast.makeText(getApplicationContext(), "去除噪声", Toast.LENGTH_SHORT).show();
+            src.release();
+            dst.release();
+            mark = true;
         }
     };
 
@@ -288,7 +320,39 @@ public class ImageProcessActivity extends AppCompatActivity {
     private View.OnClickListener btn_sharpenClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-
+            Mat src = new Mat();
+            if(mark){
+                Utils.bitmapToMat(Constants.processedImageBitmap,src);
+            }else{
+                Utils.bitmapToMat(Constants.croppedImageBitmap, src);
+            }
+            Mat dst = new Mat();
+            //锐化算子
+            Mat k = new Mat(3, 3, CvType.CV_32FC1);
+            float[] data = new float[]{0,-1,0,-1,5,-1,0,-1,0};
+            k.put(0,0,data);
+            //锐化
+            Imgproc.filter2D(src, dst, -1, k);
+            //
+            Bitmap img_sharpen = Bitmap.createBitmap(dst.width(), dst.height(), Bitmap.Config.ARGB_8888);
+            Utils.matToBitmap(dst, img_sharpen);
+            imageView.setImageBitmap(img_sharpen);
+            //储存
+            Constants.processedImageBitmap = img_sharpen;
+            Toast.makeText(getApplicationContext(), "锐化", Toast.LENGTH_SHORT).show();
+            src.release();
+            dst.release();
+            mark = true;
         }
     };
+
+    private View.OnClickListener btn_originalClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            imageView.setImageBitmap(Constants.croppedImageBitmap);
+            Toast.makeText(getApplicationContext(), "返回原图", Toast.LENGTH_SHORT).show();
+            mark = false;
+        }
+    };
+
 }
