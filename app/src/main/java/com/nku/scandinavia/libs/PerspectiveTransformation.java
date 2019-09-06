@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PerspectiveTransformation {
-    private static final String DEBUG_TAG = "PerspectiveTransformation";
-
     public PerspectiveTransformation() {
     }
 

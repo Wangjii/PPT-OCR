@@ -180,8 +180,8 @@ public class PolygonView extends FrameLayout {
 
     private class MidPointTouchListenerImpl implements OnTouchListener {
 
-        PointF DownPT = new PointF(); // Record Mouse Position When Pressed Down
-        PointF StartPT = new PointF(); // Record Start Position of 'img'
+        PointF DownPT = new PointF();
+        PointF StartPT = new PointF();
 
         private ImageView mainPointer1;
         private ImageView mainPointer2;
@@ -256,8 +256,8 @@ public class PolygonView extends FrameLayout {
 
     private class TouchListenerImpl implements OnTouchListener {
 
-        PointF DownPT = new PointF(); // Record Mouse Position When Pressed Down
-        PointF StartPT = new PointF(); // Record Start Position of 'img'
+        PointF DownPT = new PointF();
+        PointF StartPT = new PointF();
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {

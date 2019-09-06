@@ -53,7 +53,6 @@ public class NativeClass {
 
         Mat src = ImageUtils.bitmapToMat(bitmap);
 
-        // Downscale image for better performance.
         double ratio = DOWNSCALE_IMAGE_SIZE / Math.max(src.width(), src.height());
         Size downscaledSize = new Size(src.width() * ratio, src.height() * ratio);
         Mat downscaled = new Mat(downscaledSize, src.type());
@@ -69,18 +68,13 @@ public class NativeClass {
         return result;
     }
 
-    //public native float[] getPoints(Bitmap bitmap);
     public List<MatOfPoint2f> getPoints(Mat src) {
-
-        // Blur the image to filter out the noise.
         Mat blurred = new Mat();
         Imgproc.medianBlur(src, blurred, 9);
 
-        // Set up images to use.
         Mat gray0 = new Mat(blurred.size(), CvType.CV_8U);
         Mat gray = new Mat();
 
-        // For Core.mixChannels.
         List<MatOfPoint> contours = new ArrayList<>();
         List<MatOfPoint2f> rectangles = new ArrayList<>();
 
@@ -89,42 +83,28 @@ public class NativeClass {
         List<Mat> destinations = new ArrayList<>();
         destinations.add(gray0);
 
-        // To filter rectangles by their areas.
         int srcArea = src.rows() * src.cols();
 
-        // Find squares in every color plane of the image.
         for (int c = 0; c < 3; c++) {
             int[] ch = {c, 0};
             MatOfInt fromTo = new MatOfInt(ch);
 
             Core.mixChannels(sources, destinations, fromTo);
 
-            // Try several threshold levels.
             for (int l = 0; l < THRESHOLD_LEVEL; l++) {
                 if (l == 0) {
-                    // HACK: Use Canny instead of zero threshold level.
-                    // Canny helps to catch squares with gradient shading.
-                    // NOTE: No kernel size parameters on Java API.
                     Imgproc.Canny(gray0, gray, 10, 20);
-
-                    // Dilate Canny output to remove potential holes between edge segments.
                     Imgproc.dilate(gray, gray, Mat.ones(new Size(3, 3), 0));
                 } else {
                     int threshold = (l + 1) * 255 / THRESHOLD_LEVEL;
                     Imgproc.threshold(gray0, gray, threshold, 255, Imgproc.THRESH_BINARY);
                 }
-
-                // Find contours and store them all as a list.
                 Imgproc.findContours(gray, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-
                 for (MatOfPoint contour : contours) {
                     MatOfPoint2f contourFloat = MathUtils.toMatOfPointFloat(contour);
                     double arcLen = Imgproc.arcLength(contourFloat, true) * 0.02;
-
-                    // Approximate polygonal curves.
                     MatOfPoint2f approx = new MatOfPoint2f();
                     Imgproc.approxPolyDP(contourFloat, approx, arcLen, true);
-
                     if (isRectangle(approx, srcArea)) {
                         rectangles.add(approx);
                     }
@@ -151,7 +131,6 @@ public class NativeClass {
             return false;
         }
 
-        // Check if the all angles are more than 72.54 degrees (cos 0.3).
         double maxCosine = 0;
         Point[] approxPoints = polygon.toArray();
 
